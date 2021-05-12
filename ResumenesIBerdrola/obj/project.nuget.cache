@@ -1,8 +1,21 @@
 {
   "version": 2,
-  "dgSpecHash": "CpVsw5fZqfvRC+w53vbs+fqXoSQ89qY+4z3it9fJyOBkLID7HkDvQdiY1kytepm0CuqSXFUUUqmv2U44Ee8JKw==",
+  "dgSpecHash": "KPQ7bVuihkke//9NFP1tKhfiqqE3XEuULeN6RddMl881i9vRP109jxlbsjNxo4UBxK5Nzv4Q2qXaAEn1kitrbA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\User\\source\\repos\\ResumenesIBerdrola\\Iberdrola\\ResumenesIBerdrola\\ResumenesIBerdrola.csproj",
-  "expectedPackageFiles": [],
-  "logs": []
+  "projectFilePath": "C:\\Users\\Babel\\Documents\\Iberdrola\\code\\Iberdrola\\ResumenesIBerdrola\\ResumenesIBerdrola.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Babel\\.nuget\\packages\\windowsapicodepack\\1.1.1\\windowsapicodepack.1.1.1.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'WindowsAPICodePack 1.1.1' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework '.NETCoreApp,Version=v3.1'. This package may not be fully compatible with your project.",
+      "libraryId": "WindowsAPICodePack",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v3.1"
+      ]
+    }
+  ]
 }

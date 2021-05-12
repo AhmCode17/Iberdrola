@@ -1,31 +1,68 @@
 {
   "version": 3,
   "targets": {
-    ".NETCoreApp,Version=v3.1": {}
+    ".NETCoreApp,Version=v3.1": {
+      "WindowsAPICodePack/1.1.1": {
+        "type": "package",
+        "compile": {
+          "lib/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll": {},
+          "lib/Microsoft.WindowsAPICodePack.Sensors.dll": {},
+          "lib/Microsoft.WindowsAPICodePack.Shell.dll": {},
+          "lib/Microsoft.WindowsAPICodePack.ShellExtensions.dll": {},
+          "lib/Microsoft.WindowsAPICodePack.dll": {}
+        },
+        "runtime": {
+          "lib/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll": {},
+          "lib/Microsoft.WindowsAPICodePack.Sensors.dll": {},
+          "lib/Microsoft.WindowsAPICodePack.Shell.dll": {},
+          "lib/Microsoft.WindowsAPICodePack.ShellExtensions.dll": {},
+          "lib/Microsoft.WindowsAPICodePack.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "WindowsAPICodePack/1.1.1": {
+      "sha512": "wy9smFV1GktHI9/T8M9Z1aO/6Qiv0DVWJBFzjX1uDFBTXfhnFFXXnVgv751HBBgDLLNHd/W6csfh2P/WbRBg1Q==",
+      "type": "package",
+      "path": "windowsapicodepack/1.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "content/Windows Logo.png",
+        "lib/Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll",
+        "lib/Microsoft.WindowsAPICodePack.Sensors.dll",
+        "lib/Microsoft.WindowsAPICodePack.Shell.dll",
+        "lib/Microsoft.WindowsAPICodePack.ShellExtensions.dll",
+        "lib/Microsoft.WindowsAPICodePack.dll",
+        "windowsapicodepack.1.1.1.nupkg.sha512",
+        "windowsapicodepack.nuspec"
+      ]
+    }
+  },
   "projectFileDependencyGroups": {
-    ".NETCoreApp,Version=v3.1": []
+    ".NETCoreApp,Version=v3.1": [
+      "WindowsAPICodePack >= 1.1.1"
+    ]
   },
   "packageFolders": {
-    "C:\\Users\\User\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\Babel\\.nuget\\packages\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\User\\source\\repos\\ResumenesIBerdrola\\Iberdrola\\ResumenesIBerdrola\\ResumenesIBerdrola.csproj",
+      "projectUniqueName": "C:\\Users\\Babel\\Documents\\Iberdrola\\code\\Iberdrola\\ResumenesIBerdrola\\ResumenesIBerdrola.csproj",
       "projectName": "ResumenesIBerdrola",
-      "projectPath": "C:\\Users\\User\\source\\repos\\ResumenesIBerdrola\\Iberdrola\\ResumenesIBerdrola\\ResumenesIBerdrola.csproj",
-      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\User\\source\\repos\\ResumenesIBerdrola\\Iberdrola\\ResumenesIBerdrola\\obj\\",
+      "projectPath": "C:\\Users\\Babel\\Documents\\Iberdrola\\code\\Iberdrola\\ResumenesIBerdrola\\ResumenesIBerdrola.csproj",
+      "packagesPath": "C:\\Users\\Babel\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Babel\\Documents\\Iberdrola\\code\\Iberdrola\\ResumenesIBerdrola\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\Babel\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -50,6 +87,12 @@
     "frameworks": {
       "netcoreapp3.1": {
         "targetAlias": "netcoreapp3.1",
+        "dependencies": {
+          "WindowsAPICodePack": {
+            "target": "Package",
+            "version": "[1.1.1, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",
@@ -68,8 +111,20 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'WindowsAPICodePack 1.1.1' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework '.NETCoreApp,Version=v3.1'. This package may not be fully compatible with your project.",
+      "libraryId": "WindowsAPICodePack",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v3.1"
+      ]
+    }
+  ]
 }

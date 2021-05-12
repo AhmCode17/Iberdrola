@@ -1,20 +1,6 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 namespace ResumenesIBerdrola
 {
     /// <summary>
@@ -22,6 +8,7 @@ namespace ResumenesIBerdrola
     /// </summary>
     public partial class MainWindow : Window
     {
+
         public MainWindow()
         {
             InitializeComponent();
@@ -39,26 +26,25 @@ namespace ResumenesIBerdrola
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-               
-            OpenFileDialog openFileDialog = new OpenFileDialog()
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog
             {
                 InitialDirectory = @"C:\Descargas",
-
-                CheckFileExists = true,
-                CheckPathExists = true,
-
-                DefaultExt = "xlsx",
-                Filter = "xlsx files (*.xlsx)|*.xlsx",
-                FilterIndex = 2,
-                RestoreDirectory = true,
-
-                ReadOnlyChecked = true,
-                ShowReadOnly = true
+                IsFolderPicker = true
             };
-
-            if (openFileDialog.ShowDialog() == true)
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                txtRuta.Text = openFileDialog.FileName;
+                txtRuta.Text = dialog.FileName;
+
+                foreach (string file in Directory.EnumerateFiles(txtRuta.Text, "*.xlsx"))
+                {
+                    lstFiles.Items.Add(file);
+                }
+
+                foreach (string file in Directory.EnumerateFiles(txtRuta.Text, "*.xls"))
+                {
+                    lstFiles.Items.Add(file);
+                    lblFiles.Content = lstFiles.Items.Count + " archivos";
+                }
             }
         }
     }

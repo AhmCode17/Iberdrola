@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="WindowsAPICodePack" Version="1.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="EPPlus">
       <HintPath>..\..\TestExcel\EPPlus.dll</HintPath>
     </Reference>
