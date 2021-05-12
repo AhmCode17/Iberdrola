@@ -1,0 +1,25 @@
+﻿<Window x:Class="ResumenesIBerdrola.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ResumenesIBerdrola"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="400" Width="800">
+    <Grid>
+        <TextBox HorizontalAlignment="Left" Height="35" Margin="39,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="415"/>
+        <Button  HorizontalAlignment="Left" Margin="634,49,0,0" VerticalAlignment="Top" Width="100" Height="35" Click="Button_Click">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="Assets/iconProcess.png" Width="22"></Image>
+                <TextBlock x:Name="btnProcesar" Text="  Procesar" VerticalAlignment="Center"></TextBlock>
+            </StackPanel>
+        </Button>
+        <Button  HorizontalAlignment="Left" Margin="481,49,0,0" VerticalAlignment="Top" Width="120" Height="35">
+            <StackPanel x:Name="btnSubArchivo" Orientation="Horizontal">
+                <Image Source="Assets/iconarchive.png" Width="22"></Image>
+                <TextBlock Text="  Subir Archivo" VerticalAlignment="Center"></TextBlock>
+            </StackPanel>
+        </Button>
+        <ListBox Margin="39,109,340,105"/>
+    </Grid>
+</Window>
