@@ -39,8 +39,27 @@ namespace ResumenesIBerdrola
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            string rutaDirectory = string.Empty;
+               
+            OpenFileDialog openFileDialog = new OpenFileDialog()
+            {
+                InitialDirectory = @"C:\Descargas",
 
+                CheckFileExists = true,
+                CheckPathExists = true,
+
+                DefaultExt = "xlsx",
+                Filter = "xlsx files (*.xlsx)|*.xlsx",
+                FilterIndex = 2,
+                RestoreDirectory = true,
+
+                ReadOnlyChecked = true,
+                ShowReadOnly = true
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                txtRuta.Text = openFileDialog.FileName;
+            }
         }
     }
 }
