@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\User\\source\\repos\\ResumenesIBerdrola\\ResumenesIBerdrola\\ResumenesIBerdrola.csproj",
+      "projectUniqueName": "C:\\Users\\User\\source\\repos\\ResumenesIBerdrola\\Iberdrola\\ResumenesIBerdrola\\ResumenesIBerdrola.csproj",
       "projectName": "ResumenesIBerdrola",
-      "projectPath": "C:\\Users\\User\\source\\repos\\ResumenesIBerdrola\\ResumenesIBerdrola\\ResumenesIBerdrola.csproj",
+      "projectPath": "C:\\Users\\User\\source\\repos\\ResumenesIBerdrola\\Iberdrola\\ResumenesIBerdrola\\ResumenesIBerdrola.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\User\\source\\repos\\ResumenesIBerdrola\\ResumenesIBerdrola\\obj\\",
+      "outputPath": "C:\\Users\\User\\source\\repos\\ResumenesIBerdrola\\Iberdrola\\ResumenesIBerdrola\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
