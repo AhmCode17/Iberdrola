@@ -7,19 +7,27 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="400" Width="800">
     <Grid>
-        <TextBox HorizontalAlignment="Left" Height="35" Margin="39,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="415"/>
-        <Button  HorizontalAlignment="Left" Margin="634,49,0,0" VerticalAlignment="Top" Width="100" Height="35" Click="Button_Click">
+        <TextBox x:Name="txtRuta" HorizontalAlignment="Left" Height="35" Margin="45,110,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="415"/>
+        <Button  HorizontalAlignment="Left" Margin="635,110,0,0" VerticalAlignment="Top" Width="100" Height="35" Click="Button_Click">
             <StackPanel Orientation="Horizontal">
                 <Image Source="Assets/iconProcess.png" Width="22"></Image>
                 <TextBlock x:Name="btnProcesar" Text="  Procesar" VerticalAlignment="Center"></TextBlock>
             </StackPanel>
         </Button>
-        <Button  HorizontalAlignment="Left" Margin="481,49,0,0" VerticalAlignment="Top" Width="120" Height="35">
-            <StackPanel x:Name="btnSubArchivo" Orientation="Horizontal">
+        <Button  HorizontalAlignment="Left" Margin="490,110,0,0" VerticalAlignment="Top" Width="120" Height="35" Click="Button_Click_1">
+            <StackPanel Orientation="Horizontal">
                 <Image Source="Assets/iconarchive.png" Width="22"></Image>
                 <TextBlock Text="  Subir Archivo" VerticalAlignment="Center"></TextBlock>
             </StackPanel>
         </Button>
-        <ListBox Margin="39,109,340,105"/>
+        <ListBox Margin="45,166,334,48"/>
+        <Image x:Name="image" HorizontalAlignment="Left" Height="78" Margin="45,10,0,0" VerticalAlignment="Top" Width="254" RenderTransformOrigin="-1.244,0.054" Source="Assets/iberdrola.png"/>
+        <Button x:Name="btnSalir" HorizontalAlignment="Left" Margin="635,301,0,0" VerticalAlignment="Top" Width="100" Height="35" Click="btnSalir_Click">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="Assets/iconClose.png" Width="22"></Image>
+                <TextBlock Text="  Cancelar" VerticalAlignment="Center"></TextBlock>
+            </StackPanel>
+        </Button>
+        <Label x:Name="label" Content="RESUMENES IBERDROLA" HorizontalAlignment="Left" Margin="470,25,0,0" VerticalAlignment="Top" Height="38" Width="265" FontSize="20" FontWeight="Bold" FontFamily="Arial Rounded MT Bold"/>
     </Grid>
 </Window>

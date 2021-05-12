@@ -8,7 +8,9 @@
 
   <ItemGroup>
     <None Remove="Assets\iconarchive.png" />
+    <None Remove="Assets\iconClose.png" />
     <None Remove="Assets\iconProcess.png" />
+    <None Remove="iberdrola.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,7 +21,9 @@
 
   <ItemGroup>
     <Resource Include="Assets\iconarchive.png" />
+    <Resource Include="Assets\iconClose.png" />
     <Resource Include="Assets\iconProcess.png" />
+    <Resource Include="Assets\iberdrola.png" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +30,17 @@ namespace ResumenesIBerdrola
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("hola");
+        }
+
+        private void btnSalir_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            string rutaDirectory = string.Empty;
+
         }
     }
 }
