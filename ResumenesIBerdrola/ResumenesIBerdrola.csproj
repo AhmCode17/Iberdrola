@@ -4,6 +4,15 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x86</Platforms>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,12 +23,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="NPOI" Version="2.5.3" />
+    <PackageReference Include="System.Data.Odbc" Version="5.0.0" />
+    <PackageReference Include="System.Data.OleDb" Version="5.0.0" />
     <PackageReference Include="WindowsAPICodePack" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="EPPlus">
-      <HintPath>..\..\TestExcel\EPPlus.dll</HintPath>
+      <HintPath>bin\Debug\netcoreapp3.1\EPPlus.dll</HintPath>
     </Reference>
   </ItemGroup>
 
