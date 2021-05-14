@@ -3,6 +3,7 @@ using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using OfficeOpenXml;
 using ResumenesIBerdrola.Data;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Odbc;
@@ -18,10 +19,12 @@ namespace ResumenesIBerdrola
     /// </summary>
     public partial class MainWindow : Window
     {
+        readonly MsAccessDataContext db;
         string[] tipos = { "ENERGIA TOTAL", "ENERGIA NORMAL", "ENERGIA PORTEADA", "ENERGIA NORMAL POR FALTANTE", "RESPALDO POR CARGA" };
         public MainWindow()
         {
             InitializeComponent();
+            db = new MsAccessDataContext();
         }
         private IDbConnection _conn;
         public IDbConnection Connection
@@ -32,16 +35,12 @@ namespace ResumenesIBerdrola
             }
         }
 
+        public List<ConceptoModel> Conceptos = new List<ConceptoModel>();
+        public List<CentralModel> Centrales = new List<CentralModel>();
+
         private void BtnSalir_Click(object sender, RoutedEventArgs e)
         {
-          
-
-            //this.Close();
-          
-          
-
-
-
+            this.Close();
         }
 
         private void BtnSeleccionar_Click(object sender, RoutedEventArgs e)
@@ -70,16 +69,20 @@ namespace ResumenesIBerdrola
 
         private void BtnProcesar_Click(object sender, RoutedEventArgs e)
         {
-            //GetHeaderExcel();
-            GetHeaderExcelOld();
+            Conceptos = (List<ConceptoModel>)db.GetConcepto().Data;
+            Centrales = (List<CentralModel>)db.GetCentral().Data;
+            GetHeaderExcel();
+            //  GetHeaderExcelOld();
         }
 
         public void GetHeaderExcel()
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             FileInfo existingFile = new FileInfo(@"C:\Users\Babel\Documents\Iberdrola\Resumen CFE\Resumen BNS.xlsx");
-            List<ResumenModel> lst = new List<ResumenModel>();
+            List<ResumenModel> lstresumenModelHeader = new List<ResumenModel>();
             List<ResumenModel> lstDetail = new List<ResumenModel>();
+            ResumenBaseModel resumen = new ResumenBaseModel();
+            int fkCentral = 0;
             using (ExcelPackage package = new ExcelPackage(existingFile))
             {
                 //get the first worksheet in the workbook
@@ -90,14 +93,29 @@ namespace ResumenesIBerdrola
                 int rowCount = worksheet.Dimension.End.Row;     //get row count
 
                 var perido = worksheet.Cells[4, 1].Value.ToString().Split(':')[0];
-                var central = worksheet.Cells[3, 1].Value.ToString().Split(':')[1];
+                var central = worksheet.Cells[3, 1].Value.ToString().Split(':')[1].Trim();
                 var tipo = worksheet.Cells[17, 2].Value.ToString();
                 int endLetter = perido.Length - 7;
                 perido = perido.Substring(0, endLetter);
 
-
-
                 int row2 = 17;
+                var centralFind = Centrales.FirstOrDefault(x => x.Cliente.Contains(central));
+                if (centralFind != null)
+                {
+                    fkCentral = centralFind.Id;
+
+                    var resumenList = (ResumenBaseModel)db.SaveResumen(new ResumenBaseModel
+                    {
+                        FkCentral = fkCentral,
+                        Periodo = perido,
+                        FechaCreacion = DateTime.Now
+                    }).Data;
+
+                    //ResumenBaseModel resumenList = (ResumenBaseModel)
+                    if (resumenList != null)
+                        resumen.Id = resumenList.Id;
+                }
+
 
                 ///Obtiene los headers
                 for (int row = 7; row <= 16; row++)
@@ -114,29 +132,56 @@ namespace ResumenesIBerdrola
                     var KwSemiPunta = worksheet.Cells[row, 11].Value == null ? string.Empty : worksheet.Cells[row, 11].Value.ToString();
                     var KwKvarh = worksheet.Cells[row, 12].Value == null ? string.Empty : worksheet.Cells[row, 12].Value.ToString();
                     var KwFp = worksheet.Cells[row, 13].Value == null ? string.Empty : worksheet.Cells[row, 13].Value.ToString();
+                    int fkConcepto = 0;
 
-                    lst.Add(new ResumenModel
+                    var conceptoFind = Conceptos.FirstOrDefault(x => x.Concepto.Contains(concepto));
+                    if (conceptoFind != null)
+                        fkConcepto = conceptoFind.Id;
+
+                    lstresumenModelHeader.Add(new ResumenModel
                     {
-                        KwhBase = decimal.Parse(KwhBase),
-                        KwhIntermedia = decimal.Parse(KwhIntermedia),
-                        KwhPunta = decimal.Parse(KwhPunta),
-                        KwhSemiPunta = decimal.Parse(KwhSemiPunta),
-                        KwhTotales = decimal.Parse(KwhTotales),
-                        KwBase = decimal.Parse(KwBase),
-                        KwIntermedia = decimal.Parse(KwIntermedia),
-                        KwPunta = decimal.Parse(KwPunta),
-                        KwSemiPunta = decimal.Parse(KwSemiPunta),
-                        KwKvarh = decimal.Parse(KwKvarh),
-                        KwFp = decimal.Parse(KwFp),
-                        Concepto = concepto
-
+                        KwhBase = GetValue(KwhBase),
+                        KwhIntermedia = GetValue(KwhIntermedia),
+                        KwhPunta = GetValue(KwhPunta),
+                        KwhSemiPunta = GetValue(KwhSemiPunta),
+                        KwhTotales = GetValue(KwhTotales),
+                        KwBase = GetValue(KwBase),
+                        KwIntermedia = GetValue(KwIntermedia),
+                        KwPunta = GetValue(KwPunta),
+                        KwSemiPunta = GetValue(KwSemiPunta),
+                        KwKvarh = GetValue(KwKvarh),
+                        KwFp = GetValue(KwFp),
+                        Concepto = concepto,
+                        Periodo = perido,
+                        FkResumen = resumen.Id,
+                        FkConcepto = fkConcepto
                     });
                 }
+
+                //Guarda el header en la tabla de 
+                foreach (var item in lstresumenModelHeader)
+                {
+                     var resp = db.SaveCentralTotal(item);
+                }
+
                 //Obtiene el detalle
                 lstDetail.AddRange(GetDetail(worksheet, row2, rowCount, tipos, tipo));
+                foreach (var item in lstDetail)
+                {
+                    item.FkResumen = resumen.Id;
+                    var resp = db.SavePuntoDeCarga(item);
+
+                }
             }
         }
 
+
+        public decimal GetValue(string vl)
+        {
+            decimal data;
+            decimal.TryParse(vl, out data);
+            return data;
+        }
         public List<ResumenModel> GetDetail(ExcelWorksheet worksheet, int row2, int rowCount, string[] tipos, string tipo)
         {
             List<ResumenModel> lst = new List<ResumenModel>();
@@ -161,25 +206,39 @@ namespace ResumenesIBerdrola
                     var KwSemiPunta = worksheet.Cells[row, 11].Value == null ? string.Empty : worksheet.Cells[row, 11].Value.ToString();
                     var KwKvarh = worksheet.Cells[row, 12].Value == null ? string.Empty : worksheet.Cells[row, 12].Value.ToString();
                     var KwFp = worksheet.Cells[row, 13].Value == null ? string.Empty : worksheet.Cells[row, 13].Value.ToString();
+
+                    var capacidadTotal = worksheet.Cells[row, 39].Value == null ? string.Empty : worksheet.Cells[row, 39].Value.ToString();
+                    var distribucionTotal = worksheet.Cells[row, 40].Value == null ? string.Empty : worksheet.Cells[row, 40].Value.ToString();
+
                     var nomCliente = concepto.Split('_')[2];
                     var rpu = concepto.Split('_')[1];
+
+
+                    int fkConcepto = 0;
+
+                    var conceptoFind = Conceptos.FirstOrDefault(x => x.Concepto.Contains(tipo));
+                    if (conceptoFind != null)
+                        fkConcepto = conceptoFind.Id;
                     lst.Add(new ResumenModel
                     {
-                        KwhBase = decimal.Parse(KwhBase),
-                        KwhIntermedia = decimal.Parse(KwhIntermedia),
-                        KwhPunta = decimal.Parse(KwhPunta),
-                        KwhSemiPunta = decimal.Parse(KwhSemiPunta),
-                        KwhTotales = decimal.Parse(KwhTotales),
-                        KwBase = decimal.Parse(KwBase),
-                        KwIntermedia = decimal.Parse(KwIntermedia),
-                        KwPunta = decimal.Parse(KwPunta),
-                        KwSemiPunta = decimal.Parse(KwSemiPunta),
-                        KwKvarh = decimal.Parse(KwKvarh),
-                        KwFp = decimal.Parse(KwFp),
+                        KwhBase = GetValue(KwhBase),
+                        KwhIntermedia = GetValue(KwhIntermedia),
+                        KwhPunta = GetValue(KwhPunta),
+                        KwhSemiPunta = GetValue(KwhSemiPunta),
+                        KwhTotales = GetValue(KwhTotales),
+                        KwBase = GetValue(KwBase),
+                        KwIntermedia = GetValue(KwIntermedia),
+                        KwPunta = GetValue(KwPunta),
+                        KwSemiPunta = GetValue(KwSemiPunta),
+                        KwKvarh = GetValue(KwKvarh),
+                        KwFp = GetValue(KwFp),
+                        CapacidadTotal = GetValue(capacidadTotal),
+                        DistribucionTotal = GetValue(distribucionTotal),
                         Tipo = tipo,
-                        Concepto = concepto,
+                        Descripcion=concepto,
                         NombreCliente = nomCliente,
-                        Rpu = rpu
+                        Rpu = rpu,
+                        FkConcepto= fkConcepto
                     });
                 }
             }
