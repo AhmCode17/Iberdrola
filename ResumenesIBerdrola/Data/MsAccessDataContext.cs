@@ -269,7 +269,7 @@ namespace ResumenesIBerdrola.Data
             {
                 result.Success = false;
                 result.Msg = ex.Message;
-            }
+            }           
             return result;
         }
 

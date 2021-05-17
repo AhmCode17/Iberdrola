@@ -20,9 +20,7 @@ namespace ResumenesIBerdrola.Data
         public string NombreCliente { get; set; }
         public string Periodo { get; set; }
         public string Rpu { get; set; }
-
         public int FkResumen { get; set; }
-
         public int FkConcepto { get; set; }
         public decimal CapacidadTotal { get; set; }
         public decimal DistribucionTotal { get; set; }
@@ -33,9 +31,7 @@ namespace ResumenesIBerdrola.Data
     public class Result
     {
         public bool Success { get; set; }
-
         public string Error { get; set; }
-
         public string Msg { get; set; }
         public object Data { get; set; }
     }
