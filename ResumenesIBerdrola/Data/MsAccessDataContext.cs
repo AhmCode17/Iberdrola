@@ -14,25 +14,34 @@ namespace ResumenesIBerdrola.Data
             Result result = new Result();
             try
             {
-
-                using (OleDbConnection con = new OleDbConnection(connstring))
+                var existResumen = (ResumenBaseModel)GetResumen(model).Data;
+                if (existResumen.Id > 0)
                 {
-                    con.Open();
-
-                    string sql = "INSERT INTO Resumen (FkCentral, Periodo, FechaCreacion) " +
-                        "VALUES(@FkCentral, @Periodo, @FechaCreacion);";
-
-                    OleDbCommand comando = new OleDbCommand(sql, con);
-                    comando.Parameters.AddWithValue("@FkCentral", model.FkCentral);
-                    comando.Parameters.AddWithValue("@Periodo", model.Periodo);
-                    comando.Parameters.AddWithValue("@FechaCreacion", model.FechaCreacion.ToString());
-                    comando.ExecuteNonQuery();
-
-                    con.Close();
+                    result.Success = false;
+                    result.Msg = string.Format("Ya existe una central: {0} con periodo periodo {0}", model.Central, model.Periodo);
                 }
-                result.Data = GetResumen(model).Data;
-                result.Success = true;
-                result.Msg = "Se proceso el archivo";
+                else
+                {
+                    using (OleDbConnection con = new OleDbConnection(connstring))
+                    {
+                        con.Open();
+
+                        string sql = "INSERT INTO Resumen (FkCentral, Periodo, FechaCreacion) " +
+                            "VALUES(@FkCentral, @Periodo, @FechaCreacion);";
+
+                        OleDbCommand comando = new OleDbCommand(sql, con);
+                        comando.Parameters.AddWithValue("@FkCentral", model.FkCentral);
+                        comando.Parameters.AddWithValue("@Periodo", model.Periodo);
+                        comando.Parameters.AddWithValue("@FechaCreacion", model.FechaCreacion.ToString());
+                        comando.ExecuteNonQuery();
+
+                        con.Close();
+                    }
+                    result.Data = GetResumen(model).Data;
+                    result.Success = true;
+                    result.Msg = "Se proceso el archivo";
+                }
+
             }
             catch (Exception ex)
             {
@@ -68,7 +77,7 @@ namespace ResumenesIBerdrola.Data
                             FkCentral = reader.GetInt32(reader.GetOrdinal("FkCentral")),
                             Periodo = reader.GetString(reader.GetOrdinal("Periodo"))
                         };
-                       
+
                     }
                     con.Close();
                 }
@@ -86,9 +95,7 @@ namespace ResumenesIBerdrola.Data
             {
                 if (reader != null) reader.Close();
             }
-
             return result;
-
         }
         public Result SaveCentralTotal(ResumenModel model)
         {
@@ -269,7 +276,7 @@ namespace ResumenesIBerdrola.Data
             {
                 result.Success = false;
                 result.Msg = ex.Message;
-            }           
+            }
             return result;
         }
 

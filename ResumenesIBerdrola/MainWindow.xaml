@@ -4,31 +4,64 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ResumenesIBerdrola"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="400" Width="800">
-    <Grid>
-        <TextBox x:Name="txtRuta" HorizontalAlignment="Left" Height="35" Margin="45,110,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="415"/>
-        <Button x:Name="btnProcesar"  HorizontalAlignment="Left" Margin="635,110,0,0" VerticalAlignment="Top" Width="110" Height="35" Click="BtnProcesar_Click">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="Assets/iconProcess.png" Width="22"></Image>
-                <TextBlock  Text="  Procesar" VerticalAlignment="Center"></TextBlock>
-            </StackPanel>
-        </Button>
-        <Button x:Name="btnSeleccionar"  HorizontalAlignment="Left" Margin="490,110,0,0" VerticalAlignment="Top" Width="140" Height="35" Click="BtnSeleccionar_Click">
+        mc:Ignorable="d" ContentRendered="Window_ContentRendered"
+        Title="MainWindow" Height="420" Width="716">
+
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Image Grid.ColumnSpan="3" x:Name="image" HorizontalAlignment="Left" Height="78" VerticalAlignment="Top" Width="254" RenderTransformOrigin="-1.244,0.054" Source="Assets/iberdrola.png"/>
+        <Label Grid.ColumnSpan="3" Grid.Column="3" x:Name="label" Content="RESUMENES IBERDROLA" HorizontalAlignment="Left" VerticalAlignment="Top" Height="38" Width="300" FontSize="20" FontWeight="Bold" FontFamily="Arial Rounded MT Bold"/>
+        <TextBox Grid.Row="1" Grid.ColumnSpan="4" x:Name="txtRuta" HorizontalAlignment="Left" Height="35" TextWrapping="Wrap" VerticalAlignment="Top" Width="450"/>
+
+        <Button x:Name="btnSeleccionar"  HorizontalAlignment="Left" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Top" Width="138" Height="32" Click="BtnSeleccionar_Click">
             <StackPanel Orientation="Horizontal">
                 <Image Source="Assets/iconarchive.png" Width="22"></Image>
                 <TextBlock Margin="5" Text="Seleccionar carpeta" VerticalAlignment="Center"></TextBlock>
             </StackPanel>
         </Button>
-        <ListBox Margin="45,166,334,48" Name="lstFiles"/>
-        <Image x:Name="image" HorizontalAlignment="Left" Height="78" Margin="45,10,0,0" VerticalAlignment="Top" Width="254" RenderTransformOrigin="-1.244,0.054" Source="Assets/iberdrola.png"/>
-        <Button x:Name="btnSalir" HorizontalAlignment="Left" Margin="645,301,0,0" VerticalAlignment="Top" Width="100" Height="35" Click="BtnSalir_Click">
+
+        <ListBox Grid.Row="2" Grid.ColumnSpan="4" Grid.RowSpan="4" Width="450"  HorizontalAlignment="Left"  Name="lstFiles"/>
+        <Label Grid.Row="6" Grid.Column="3" Name="lblFiles" Content="" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+
+        <ProgressBar Grid.Row="7" Grid.ColumnSpan="4" HorizontalAlignment="Left"  IsIndeterminate="true" Visibility="Hidden" Width="450" Height="20" Name="pbStatus" />
+        <TextBlock x:Name="lblFilesSuccess" Grid.Row="7" Grid.ColumnSpan="4" Text="" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <Button x:Name="btnProcesar"  HorizontalAlignment="Left" Grid.Column="4" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Top" Width="138" Height="32" Click="BtnProcesar_Click">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="Assets/iconProcess.png" Width="22"></Image>
+                <TextBlock  Text="  Procesar" VerticalAlignment="Center"></TextBlock>
+            </StackPanel>
+        </Button>
+
+        <Button x:Name="btnSalir" HorizontalAlignment="Left" Grid.Column="4" Grid.Row="5" Grid.ColumnSpan="2" VerticalAlignment="Top" Width="138" Height="32" Click="BtnSalir_Click">
             <StackPanel Orientation="Horizontal">
                 <Image Source="Assets/iconClose.png" Width="22"></Image>
                 <TextBlock Text="  Salir" VerticalAlignment="Center"></TextBlock>
             </StackPanel>
         </Button>
-        <Label x:Name="label" Content="RESUMENES IBERDROLA" HorizontalAlignment="Left" Margin="470,25,0,0" VerticalAlignment="Top" Height="38" Width="265" FontSize="20" FontWeight="Bold" FontFamily="Arial Rounded MT Bold"/>
-        <Label Name="lblFiles" Content="" HorizontalAlignment="Left" Margin="45,336,0,0" VerticalAlignment="Top"/>
-    </Grid>
+        <Button x:Name="btnLog" HorizontalAlignment="Left" Grid.Column="4" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Top" Width="138" Height="32" Click="btnLog_Click">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="Assets/iconClose.png" Width="22"></Image>
+                <TextBlock Text=" Ver log de errores" VerticalAlignment="Center"></TextBlock>
+            </StackPanel>
+        </Button>
+
+    </Grid>   
 </Window>

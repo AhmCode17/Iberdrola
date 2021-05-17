@@ -59,5 +59,6 @@ namespace ResumenesIBerdrola.Data
         public int FkCentral { get; set; }
         public string Periodo { get; set; }
         public DateTime FechaCreacion { get; set; }
+        public string Central { get; set; }
     }
 }

@@ -56,3 +56,6 @@ C:\Users\Babel\Documents\Iberdrola\code\Iberdrola\ResumenesIBerdrola\bin\Debug\n
 C:\Users\Babel\Documents\Iberdrola\code\Iberdrola\ResumenesIBerdrola\bin\Debug\netcoreapp3.1\runtimes\linux\lib\netcoreapp2.0\System.Data.Odbc.dll
 C:\Users\Babel\Documents\Iberdrola\code\Iberdrola\ResumenesIBerdrola\bin\Debug\netcoreapp3.1\runtimes\osx\lib\netcoreapp2.0\System.Data.Odbc.dll
 C:\Users\Babel\Documents\Iberdrola\code\Iberdrola\ResumenesIBerdrola\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Data.Odbc.dll
+C:\Users\Babel\Documents\Iberdrola\code\Iberdrola\ResumenesIBerdrola\bin\Debug\netcoreapp3.1\log4net.config
+C:\Users\Babel\Documents\Iberdrola\code\Iberdrola\ResumenesIBerdrola\bin\Debug\netcoreapp3.1\log4net.dll
+C:\Users\Babel\Documents\Iberdrola\code\Iberdrola\ResumenesIBerdrola\obj\Debug\netcoreapp3.1\ResumenesIBerdrola_Content.g.cs

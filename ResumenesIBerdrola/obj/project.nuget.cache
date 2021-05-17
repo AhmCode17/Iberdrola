@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "9jiIeXK+rxbjvId2/jHH+ggPr5uW9TeKu/OGvQTpHcsFLdIXjYrFbXAVoWmHqsxUn9s7VPPa42UKb+FLrhqeRw==",
+  "dgSpecHash": "3so9tgbSNiiZO+ri7GwE4SwTp7sY2UieDGI33sDdf+ubFf8Laf7/BH6E0TjFKKjijMNmhPcNvmRiudLhuPoddg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Babel\\Documents\\Iberdrola\\code\\Iberdrola\\ResumenesIBerdrola\\ResumenesIBerdrola.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Babel\\.nuget\\packages\\log4net\\2.0.12\\log4net.2.0.12.nupkg.sha512",
     "C:\\Users\\Babel\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
     "C:\\Users\\Babel\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
     "C:\\Users\\Babel\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
