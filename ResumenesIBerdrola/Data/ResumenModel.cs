@@ -25,6 +25,7 @@ namespace ResumenesIBerdrola.Data
         public decimal CapacidadTotal { get; set; }
         public decimal DistribucionTotal { get; set; }
         public string Descripcion { get; set; }
+        public bool Reemplazar { get; set; }
 
     }
 
@@ -60,5 +61,16 @@ namespace ResumenesIBerdrola.Data
         public string Periodo { get; set; }
         public DateTime FechaCreacion { get; set; }
         public string Central { get; set; }
+        public bool Reemplazar { get; set; }
+    }
+
+    public class ErrorModel
+    {
+        public string Archivo { get; set; }
+        public string Error { get; set; }
+        public string Periodo { get; set; }
+        public string Central { get; set; }
+        public string Concepto { get; set; }
+        public bool Exist { get; set; }
     }
 }

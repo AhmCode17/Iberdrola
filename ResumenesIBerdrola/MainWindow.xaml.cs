@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 namespace ResumenesIBerdrola
 {
@@ -21,14 +22,15 @@ namespace ResumenesIBerdrola
     public partial class MainWindow : Window
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
+        private ErrorModel errorModel = new ErrorModel();
         readonly MsAccessDataContext db;
         string[] tipos = { "ENERGIA TOTAL", "ENERGIA NORMAL", "ENERGIA PORTEADA", "ENERGIA NORMAL POR FALTANTE", "RESPALDO POR CARGA" };
         public MainWindow()
         {
             InitializeComponent();
-            db = new MsAccessDataContext();
+            db = new MsAccessDataContext(log);
             log4net.Config.XmlConfigurator.Configure();
+           
         }
 
         public IDbConnection Connection { get; }
@@ -49,7 +51,8 @@ namespace ResumenesIBerdrola
             FilesExcelNew = new List<string>();
             FilesExcelOld = new List<string>();
             lblFilesSuccess.Text = "";
-           CommonOpenFileDialog dialog = new CommonOpenFileDialog
+          
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog
             {
                 InitialDirectory = @"C:\",
                 IsFolderPicker = true
@@ -73,25 +76,13 @@ namespace ResumenesIBerdrola
             }
         }
 
-        private void BtnProcesar_Click(object sender, RoutedEventArgs e)
+        private async void BtnProcesar_Click(object sender, RoutedEventArgs e)
         {
-
             if (lstFiles.Items.Count >= 1)
             {
-
-                var thread = new Thread(ExecuteMigration) { IsBackground = true };
-                thread.Start();
-                //Conceptos = (List<ConceptoModel>)db.GetConcepto().Data;
-                //Centrales = (List<CentralModel>)db.GetCentral().Data;
-
-                //foreach (var item in FilesExcelNew)
-                //{
-                //    GetHeaderExcel(item);
-                //}
-                //foreach (var item in FilesExcelOld)
-                //{
-                //    GetHeaderExcelOld(item);
-                //}
+                pbStatus.Visibility = Visibility.Visible;
+                var thread = await Task.Run(() => {  ExecuteMigration(); return true; }); 
+               // thread.Start();
             }
             else
             {
@@ -99,9 +90,9 @@ namespace ResumenesIBerdrola
             }
         }
 
-        public void ExecuteMigration()
+        public async void ExecuteMigration()
         {
-            Dispatcher.BeginInvoke(new Action(() =>
+          await  Dispatcher.BeginInvoke(new Action(() =>
             {
                 btnLog.IsEnabled = false;
                 btnProcesar.IsEnabled = false;
@@ -133,6 +124,7 @@ namespace ResumenesIBerdrola
                 btnSalir.IsEnabled = true;
                 btnSeleccionar.IsEnabled = true;
                 pbStatus.Visibility = Visibility.Hidden;
+                MessageBox.Show("Se terminó el proceso favor de revisar el log");
             }));
         }
 
@@ -141,6 +133,7 @@ namespace ResumenesIBerdrola
         {
             try
             {
+                log.Info(string.Format("*************** Se va a leer el archivo: {0} ***************", path));
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 //FileInfo existingFile = new FileInfo(@"C:\Users\Babel\Documents\Iberdrola\test\Resumen BNS.xlsx");
                 FileInfo existingFile = new FileInfo(path);
@@ -153,7 +146,7 @@ namespace ResumenesIBerdrola
                 {
                     //get the first worksheet in the workbook
                     var currentSheet = package.Workbook.Worksheets;
-                    ExcelWorksheet worksheet = currentSheet.First(x => x.Hidden != OfficeOpenXml.eWorkSheetHidden.Hidden);
+                    ExcelWorksheet worksheet = currentSheet.First(x => x.Hidden != eWorkSheetHidden.Hidden);
                     int colCount = worksheet.Dimension.End.Column;  //get Column Count
                     int rowCount = worksheet.Dimension.End.Row;     //get row count
                     var periodoText = worksheet.Cells[4, 1].Value.ToString();
@@ -174,7 +167,8 @@ namespace ResumenesIBerdrola
                             FkCentral = fkCentral,
                             Periodo = perido,
                             FechaCreacion = DateTime.Now,
-                            Central = central
+                            Central = central,
+                            Reemplazar = bool.Parse(chkReemplazar.IsChecked.ToString())
                         });
                         if (data.Success)
                         {
@@ -225,7 +219,8 @@ namespace ResumenesIBerdrola
                                 Concepto = concepto,
                                 Periodo = perido,
                                 FkResumen = resumen.Id,
-                                FkConcepto = fkConcepto
+                                FkConcepto = fkConcepto,
+                                Reemplazar = bool.Parse(chkReemplazar.IsChecked.ToString())
                             });
                         }
 
@@ -245,12 +240,12 @@ namespace ResumenesIBerdrola
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                log.Error(string.Format("No es un archivo con formato válido: {0}", ex.Message));
                 throw;
             }
-
+            log.Info(string.Format("*************** Fin del archivo archivo: {0} ***************", path));
         }
 
         public decimal GetValue(string vl)
@@ -266,6 +261,9 @@ namespace ResumenesIBerdrola
             {
                 for (int row = row2; row <= rowCount; row++)
                 {
+                    var baseTipo = worksheet.Cells[row, 2].Value == null ? string.Empty : worksheet.Cells[row, 2].Value.ToString();
+                    if (baseTipo == string.Empty)
+                        break;
                     if (tipos.Contains(worksheet.Cells[row, 2].Value.ToString()))
                     {
                         lst.AddRange(GetDetail(worksheet, row + 1, rowCount, tipos, worksheet.Cells[row, 2].Value.ToString()));
@@ -317,15 +315,15 @@ namespace ResumenesIBerdrola
                             Descripcion = concepto,
                             NombreCliente = nomCliente,
                             Rpu = rpu,
-                            FkConcepto = fkConcepto
+                            FkConcepto = fkConcepto,
+                            Reemplazar = bool.Parse(chkReemplazar.IsChecked.ToString())
                         });
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                log.Error(string.Format("Ocurrio un error: {0}", ex.Message));
             }
             return lst;
         }
@@ -334,6 +332,7 @@ namespace ResumenesIBerdrola
         {
             try
             {
+                log.Info(string.Format("*************** Se va a leer el archivo: {0} ***************", path));
                 DataTable dtTable = new DataTable();
                 List<string> rowList = new List<string>();
                 ISheet sheet;
@@ -384,7 +383,8 @@ namespace ResumenesIBerdrola
                             FkCentral = fkCentral,
                             Periodo = perido,
                             FechaCreacion = DateTime.Now,
-                            Central = central
+                            Central = central,
+                            Reemplazar = bool.Parse(chkReemplazar.IsChecked.ToString())
                         });
                         if (data.Success)
                         {
@@ -440,7 +440,8 @@ namespace ResumenesIBerdrola
                                 Concepto = concepto,
                                 Periodo = perido,
                                 FkResumen = resumen.Id,
-                                FkConcepto = fkConcepto
+                                FkConcepto = fkConcepto,
+                                Reemplazar = bool.Parse(chkReemplazar.IsChecked.ToString())
                             });
                         }
 
@@ -461,10 +462,11 @@ namespace ResumenesIBerdrola
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                log.Error(string.Format("No es un archivo con formato válido: {0}", ex.Message));
             }
+            log.Info(string.Format("*************** Fin del archivo archivo: {0} ***************", path));
         }
 
         public List<ResumenModel> GetDetailOld(ISheet sheet, int row2, int rowCount, string[] tipos, string tipo)
@@ -524,41 +526,17 @@ namespace ResumenesIBerdrola
                             Descripcion = concepto,
                             NombreCliente = nomCliente,
                             Rpu = rpu,
-                            FkConcepto = fkConcepto
+                            FkConcepto = fkConcepto,
+                            Reemplazar = bool.Parse(chkReemplazar.IsChecked.ToString())
                         });
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                log.Error(string.Format("Ocurrio un error detail: {0}", ex.Message));
             }
             return lst;
-        }
-
-        private void Window_ContentRendered(object sender, EventArgs e)
-        {
-            //BackgroundWorker worker = new BackgroundWorker();
-            //worker.WorkerReportsProgress = true;
-            //worker.DoWork += worker_DoWork;
-            //worker.ProgressChanged += worker_ProgressChanged;
-
-            //worker.RunWorkerAsync();
-        }
-
-        void worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            for (int i = 0; i < 100; i++)
-            {
-                (sender as BackgroundWorker).ReportProgress(i);
-                Thread.Sleep(100);
-            }
-        }
-
-        void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            pbStatus.Value = e.ProgressPercentage;
         }
 
         private void btnLog_Click(object sender, RoutedEventArgs e)

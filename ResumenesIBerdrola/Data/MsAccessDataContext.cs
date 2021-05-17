@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
@@ -7,21 +8,33 @@ namespace ResumenesIBerdrola.Data
 {
     public class MsAccessDataContext
     {
-        string connstring = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\Babel\Documents\Iberdrola\ResumenDb.accdb";
+        private static ILog log;
 
+        string connstring = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\Babel\Documents\Iberdrola\ResumenDb.accdb";
+        public MsAccessDataContext(ILog logg)
+        {
+            log = logg;
+        }
         public Result SaveResumen(ResumenBaseModel model)
         {
             Result result = new Result();
             try
             {
                 var existResumen = (ResumenBaseModel)GetResumen(model).Data;
-                if (existResumen.Id > 0)
+                if (existResumen.Id > 0 && !model.Reemplazar)
                 {
                     result.Success = false;
-                    result.Msg = string.Format("Ya existe una central: {0} con periodo periodo {0}", model.Central, model.Periodo);
+                    result.Msg = string.Format("Ya existe una central: {0} con periodo {0}", model.Central, model.Periodo);
+                    log.Info(result.Msg);
                 }
                 else
                 {
+                    if (model.Reemplazar)
+                    {
+                        DeleteInfo(existResumen);
+                        //result.Msg = string.Format("Ya existe una central: {0} con periodo {0}", model.Central, model.Periodo);
+                        log.Info(string.Format("Ya existe una central: {0} con periodo {0} y será eliminado de la base de datos", model.Central, model.Periodo));
+                    }
                     using (OleDbConnection con = new OleDbConnection(connstring))
                     {
                         con.Open();
@@ -47,9 +60,49 @@ namespace ResumenesIBerdrola.Data
             {
                 result.Success = false;
                 result.Msg = ex.Message;
+                log.Error(string.Format("SaveResumen: Ocurrio un error: {0}", ex.Message));
             }
 
             return result;
+        }
+
+        private void DeleteInfo(ResumenBaseModel model)
+        {
+            Result result = new Result();
+            try
+            {
+                using (OleDbConnection con = new OleDbConnection(connstring))
+                {
+                    con.Open();
+
+                    string sql = "DELETE FROM Resumen WHERE FkCentral=@fkCentral AND Periodo=@periodo";
+                    OleDbCommand cmd = new OleDbCommand(sql, con);
+                    cmd.Parameters.AddWithValue("@fkCentral", model.FkCentral);
+                    cmd.Parameters.AddWithValue("@periodo", model.Periodo);
+                    cmd.ExecuteNonQuery();
+
+                    sql = "DELETE FROM CentralTotal WHERE FkResumen=@fkResumen";
+                    cmd = new OleDbCommand(sql, con);
+                    cmd.Parameters.AddWithValue("@fkResumen", model.Id);
+                    cmd.ExecuteNonQuery();
+
+                    sql = "DELETE FROM PuntodeCarga WHERE FkResumen=@fkResumen";
+                    cmd = new OleDbCommand(sql, con);
+                    cmd.Parameters.AddWithValue("@fkResumen", model.Id);
+                    cmd.ExecuteNonQuery();
+
+                    con.Close();
+                }
+                result.Success = true;
+                result.Msg = "Consulta existosa";
+
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Msg = ex.Message;
+                log.Error(string.Format("DeleteInfo: Ocurrio un error: {0}", ex.Message));
+            }
         }
 
         public Result GetResumen(ResumenBaseModel model)
@@ -90,6 +143,7 @@ namespace ResumenesIBerdrola.Data
             {
                 result.Success = false;
                 result.Msg = ex.Message;
+                log.Error(string.Format("GetResumen: Ocurrio un error: {0}", ex.Message));
             }
             finally
             {
@@ -138,6 +192,7 @@ namespace ResumenesIBerdrola.Data
             {
                 result.Success = false;
                 result.Msg = ex.Message;
+                log.Error(string.Format("Ocurrio un error: {0}", ex.Message));
             }
 
             return result;
@@ -179,6 +234,7 @@ namespace ResumenesIBerdrola.Data
             {
                 result.Success = false;
                 result.Msg = ex.Message;
+                log.Error(string.Format("GetConcepto: Ocurrio un error: {0}", ex.Message));
             }
             finally
             {
@@ -226,6 +282,7 @@ namespace ResumenesIBerdrola.Data
             {
                 result.Success = false;
                 result.Msg = ex.Message;
+                log.Error(string.Format("GetCentral: Ocurrio un error: {0}", ex.Message));
             }
 
             return result;
@@ -276,6 +333,7 @@ namespace ResumenesIBerdrola.Data
             {
                 result.Success = false;
                 result.Msg = ex.Message;
+                log.Error(string.Format("SavePuntoDeCarga: Ocurrio un error: {0}", ex.Message));
             }
             return result;
         }

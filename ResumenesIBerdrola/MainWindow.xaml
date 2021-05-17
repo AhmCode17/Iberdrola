@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ResumenesIBerdrola"
-        mc:Ignorable="d" ContentRendered="Window_ContentRendered"
+        mc:Ignorable="d"
         Title="MainWindow" Height="420" Width="716">
 
     <Grid Margin="10">
@@ -62,6 +62,7 @@
                 <TextBlock Text=" Ver log de errores" VerticalAlignment="Center"></TextBlock>
             </StackPanel>
         </Button>
+        <CheckBox x:Name="chkReemplazar" Grid.Row="6" Grid.ColumnSpan="3" Content="Reemplazar información si la central y el periodo ya existe"/>
 
     </Grid>   
 </Window>
