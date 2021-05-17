@@ -6,7 +6,6 @@ using OfficeOpenXml;
 using ResumenesIBerdrola.Data;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -14,6 +13,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
+
 namespace ResumenesIBerdrola
 {
     /// <summary>
@@ -29,8 +30,14 @@ namespace ResumenesIBerdrola
         {
             InitializeComponent();
             db = new MsAccessDataContext(log);
+            try
+            {
+                File.Delete(@"C:\Iberdrola\iberdrolaLog.log");
+            }
+            catch (Exception ex)
+            {
+            }
             log4net.Config.XmlConfigurator.Configure();
-           
         }
 
         public IDbConnection Connection { get; }
@@ -51,7 +58,7 @@ namespace ResumenesIBerdrola
             FilesExcelNew = new List<string>();
             FilesExcelOld = new List<string>();
             lblFilesSuccess.Text = "";
-          
+
             CommonOpenFileDialog dialog = new CommonOpenFileDialog
             {
                 InitialDirectory = @"C:\",
@@ -76,13 +83,52 @@ namespace ResumenesIBerdrola
             }
         }
 
-        private async void BtnProcesar_Click(object sender, RoutedEventArgs e)
+        private void BtnProcesar_Click(object sender, RoutedEventArgs e)
         {
+
             if (lstFiles.Items.Count >= 1)
             {
                 pbStatus.Visibility = Visibility.Visible;
-                var thread = await Task.Run(() => {  ExecuteMigration(); return true; }); 
-               // thread.Start();
+                //btnLog.IsEnabled = false;
+                //btnProcesar.IsEnabled = false;
+                //btnSalir.IsEnabled = false;
+                //btnSeleccionar.IsEnabled = false;
+                //var thread = new Task..StartNew(() => ExecuteMigration());
+                //thread.Start();
+
+                //Task.WaitAll(thread);
+
+                var task = new Thread(ExecuteMigration);
+                task.Start();
+
+                ////// var sleepingThread = new Thread(ExecuteMigration);
+                //   sleepingThread.Start();
+                //  var taskAsync = new Task(RunTaskSyncrhonously, TaskCreationOptions.LongRunning);
+                //  taskAsync.Start();
+
+
+                //btnProcesar.IsEnabled = true;
+                //btnSalir.IsEnabled = true;
+                //btnSeleccionar.IsEnabled = true;
+
+
+
+                //Thread worker = new Thread(new ThreadStart(ExecuteMigration));
+                //worker.Start();
+                //if (worker.Join(1))
+                //{
+                //    // worker thread ended ok
+                //    pbStatus.Visibility = Visibility.Hidden;
+                //}
+                //else
+                //{
+                //    // timed out
+                //  //  Console.WriteLine("Worker Thread timed out");
+                //}
+
+
+
+                pbStatus.Visibility = Visibility.Hidden;
             }
             else
             {
@@ -90,42 +136,45 @@ namespace ResumenesIBerdrola
             }
         }
 
-        public async void ExecuteMigration()
+
+        public void ExecuteMigration()
         {
-          await  Dispatcher.BeginInvoke(new Action(() =>
-            {
-                btnLog.IsEnabled = false;
-                btnProcesar.IsEnabled = false;
-                btnSalir.IsEnabled = false;
-                btnSeleccionar.IsEnabled = false;
-                pbStatus.Visibility = Visibility.Visible;
-                Conceptos = (List<ConceptoModel>)db.GetConcepto().Data;
-                Centrales = (List<CentralModel>)db.GetCentral().Data;
 
-                var suma = 50 / FilesExcelNew.Count();
-                var i = 0;
-                foreach (var item in FilesExcelNew)
-                {
-                    GetHeaderExcel(item);
 
-                    i++;
-                    lblFilesSuccess.Text = i + " archivos procesados";
-                }
-                //i = i + (50 / FilesExcelOld.Count());
-                foreach (var item in FilesExcelOld)
-                {
-                    GetHeaderExcelOld(item);
+            Dispatcher.BeginInvoke(new Action(() =>
+          {
+              //btnLog.IsEnabled = false;
+              //btnProcesar.IsEnabled = false;
+              //btnSalir.IsEnabled = false;
+              //btnSeleccionar.IsEnabled = false;
+              //  pbStatus.Visibility = Visibility.Visible;
+              Conceptos = (List<ConceptoModel>)db.GetConcepto().Data;
+              Centrales = (List<CentralModel>)db.GetCentral().Data;
 
-                    i += i;
-                    lblFilesSuccess.Text = i + " archivos procesados";
-                }
-                btnLog.IsEnabled = true;
-                btnProcesar.IsEnabled = true;
-                btnSalir.IsEnabled = true;
-                btnSeleccionar.IsEnabled = true;
-                pbStatus.Visibility = Visibility.Hidden;
-                MessageBox.Show("Se terminó el proceso favor de revisar el log");
-            }));
+              var suma = 50 / FilesExcelNew.Count();
+              var i = 0;
+              foreach (var item in FilesExcelNew)
+              {
+                  GetHeaderExcel(item);
+
+                  i++;
+                  //lblFilesSuccess.Text = i + " archivos procesados";
+              }
+              //i = i + (50 / FilesExcelOld.Count());
+              foreach (var item in FilesExcelOld)
+              {
+                  GetHeaderExcelOld(item);
+
+                  i += i;
+                  // lblFilesSuccess.Text = i + " archivos procesados";
+              }
+              // btnLog.IsEnabled = true;
+              //btnProcesar.IsEnabled = true;
+              //btnSalir.IsEnabled = true;
+              //btnSeleccionar.IsEnabled = true;
+              // pbStatus.Visibility = Visibility.Hidden;
+              MessageBox.Show("Se terminó el proceso favor de revisar el log");
+          }));
         }
 
 
@@ -243,7 +292,6 @@ namespace ResumenesIBerdrola
             catch (Exception ex)
             {
                 log.Error(string.Format("No es un archivo con formato válido: {0}", ex.Message));
-                throw;
             }
             log.Info(string.Format("*************** Fin del archivo archivo: {0} ***************", path));
         }
@@ -541,6 +589,11 @@ namespace ResumenesIBerdrola
 
         private void btnLog_Click(object sender, RoutedEventArgs e)
         {
+            // Read the file as one string.
+
+            var scr = new ErrorsScr();
+            scr.ShowDialog();
+
 
         }
     }

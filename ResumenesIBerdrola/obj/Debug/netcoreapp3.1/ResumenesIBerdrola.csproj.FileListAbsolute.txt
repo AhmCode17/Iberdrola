@@ -59,3 +59,5 @@ C:\Users\Babel\Documents\Iberdrola\code\Iberdrola\ResumenesIBerdrola\bin\Debug\n
 C:\Users\Babel\Documents\Iberdrola\code\Iberdrola\ResumenesIBerdrola\bin\Debug\netcoreapp3.1\log4net.config
 C:\Users\Babel\Documents\Iberdrola\code\Iberdrola\ResumenesIBerdrola\bin\Debug\netcoreapp3.1\log4net.dll
 C:\Users\Babel\Documents\Iberdrola\code\Iberdrola\ResumenesIBerdrola\obj\Debug\netcoreapp3.1\ResumenesIBerdrola_Content.g.cs
+C:\Users\Babel\Documents\Iberdrola\code\Iberdrola\ResumenesIBerdrola\obj\Debug\netcoreapp3.1\ErrorsScr.g.cs
+C:\Users\Babel\Documents\Iberdrola\code\Iberdrola\ResumenesIBerdrola\obj\Debug\netcoreapp3.1\ErrorsScr.baml
