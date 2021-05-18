@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ResumenesIBerdrola"
         mc:Ignorable="d"
-        Title="MainWindow" Height="420" Width="716">
+        Title="Iberdrola" Height="420" Width="716" Icon="/Assets/maini.png" WindowStartupLocation="CenterScreen">
 
     <Grid Margin="10">
         <Grid.ColumnDefinitions>

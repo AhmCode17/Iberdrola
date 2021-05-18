@@ -19,6 +19,8 @@
     <None Remove="Assets\iconarchive.png" />
     <None Remove="Assets\iconClose.png" />
     <None Remove="Assets\iconProcess.png" />
+    <None Remove="Assets\log.png" />
+    <None Remove="Assets\maini.png" />
     <None Remove="iberdrola.png" />
     <None Remove="log4net.config" />
   </ItemGroup>
@@ -48,6 +50,8 @@
     <Resource Include="Assets\iconClose.png" />
     <Resource Include="Assets\iconProcess.png" />
     <Resource Include="Assets\iberdrola.png" />
+    <Resource Include="Assets\log.png" />
+    <Resource Include="Assets\maini.png" />
   </ItemGroup>
 
 </Project>

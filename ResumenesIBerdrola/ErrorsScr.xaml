@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ResumenesIBerdrola"
-        mc:Ignorable="d"
-        Title="ErrorsScr" Height="450" Width="800">
+        mc:Ignorable="d" 
+        Title="ErrorsScr" Height="450" Width="800" WindowStartupLocation="CenterScreen" Icon="/Assets/log.png">
     <Grid>
         <ListBox x:Name="lstErrores" >
             

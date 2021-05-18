@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
 
 namespace ResumenesIBerdrola
@@ -25,6 +26,7 @@ namespace ResumenesIBerdrola
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private ErrorModel errorModel = new ErrorModel();
         readonly MsAccessDataContext db;
+        bool reemplazarData = false;
         string[] tipos = { "ENERGIA TOTAL", "ENERGIA NORMAL", "ENERGIA PORTEADA", "ENERGIA NORMAL POR FALTANTE", "RESPALDO POR CARGA" };
         public MainWindow()
         {
@@ -32,7 +34,33 @@ namespace ResumenesIBerdrola
             db = new MsAccessDataContext(log);
             try
             {
-                File.Delete(@"C:\Iberdrola\iberdrolaLog.log");
+                var appenders = log4net.LogManager.GetRepository().GetAppenders();
+                foreach (var appender in appenders)
+                {
+                    var rollingFileAppender = appender as log4net.Appender.RollingFileAppender;
+                    if (rollingFileAppender != null)
+                    {
+                        rollingFileAppender.ImmediateFlush = true;
+                        rollingFileAppender.LockingModel = new log4net.Appender.FileAppender.MinimalLock();
+                        rollingFileAppender.ActivateOptions();
+                    }
+                }
+                //  File.Delete(@"C:\Iberdrola\iberdrolaLog.log");
+                string logPath = @"C:\Iberdrola\iberdrolaLog.log";
+                if (File.Exists(logPath))
+                {
+
+                    FileInfo fi = new FileInfo(logPath);
+
+                    var logFiles = fi.Directory.GetFiles(fi.Name + "*");
+
+                    foreach (var log in logFiles)
+                    {
+                        if (File.Exists(log.FullName)) File.Delete(log.FullName);
+                    }
+                }
+
+
             }
             catch (Exception ex)
             {
@@ -85,50 +113,15 @@ namespace ResumenesIBerdrola
 
         private void BtnProcesar_Click(object sender, RoutedEventArgs e)
         {
-
             if (lstFiles.Items.Count >= 1)
             {
-                pbStatus.Visibility = Visibility.Visible;
-                //btnLog.IsEnabled = false;
-                //btnProcesar.IsEnabled = false;
-                //btnSalir.IsEnabled = false;
-                //btnSeleccionar.IsEnabled = false;
-                //var thread = new Task..StartNew(() => ExecuteMigration());
-                //thread.Start();
-
-                //Task.WaitAll(thread);
-
-                var task = new Thread(ExecuteMigration);
+                var task = new Thread(new ThreadStart(delegate
+                {
+                    Dispatcher.Invoke(DispatcherPriority.Normal, new Action<ProgressBar>(SetControls), pbStatus);
+                    ExecuteMigration();
+                    Dispatcher.Invoke(DispatcherPriority.Normal, new Action<ProgressBar>(RemoveControls), pbStatus);
+                }));
                 task.Start();
-
-                ////// var sleepingThread = new Thread(ExecuteMigration);
-                //   sleepingThread.Start();
-                //  var taskAsync = new Task(RunTaskSyncrhonously, TaskCreationOptions.LongRunning);
-                //  taskAsync.Start();
-
-
-                //btnProcesar.IsEnabled = true;
-                //btnSalir.IsEnabled = true;
-                //btnSeleccionar.IsEnabled = true;
-
-
-
-                //Thread worker = new Thread(new ThreadStart(ExecuteMigration));
-                //worker.Start();
-                //if (worker.Join(1))
-                //{
-                //    // worker thread ended ok
-                //    pbStatus.Visibility = Visibility.Hidden;
-                //}
-                //else
-                //{
-                //    // timed out
-                //  //  Console.WriteLine("Worker Thread timed out");
-                //}
-
-
-
-                pbStatus.Visibility = Visibility.Hidden;
             }
             else
             {
@@ -136,45 +129,49 @@ namespace ResumenesIBerdrola
             }
         }
 
+        private void SetControls(ProgressBar progressBar)
+        {
+            reemplazarData = bool.Parse(chkReemplazar.IsChecked.ToString());
+            btnLog.IsEnabled = false;
+            btnProcesar.IsEnabled = false;
+            chkReemplazar.IsEnabled = false;
+            btnSalir.IsEnabled = false;
+            btnSeleccionar.IsEnabled = false;
+            progressBar.Visibility = Visibility.Visible;
+        }
 
+        private void RemoveControls(ProgressBar progressBar)
+        {
+            progressBar.Visibility = Visibility.Hidden;
+            btnLog.IsEnabled = true;
+            btnProcesar.IsEnabled = true;
+            btnSalir.IsEnabled = true;
+            chkReemplazar.IsEnabled = true;
+            btnSeleccionar.IsEnabled = true;
+        }
         public void ExecuteMigration()
         {
+            Conceptos = (List<ConceptoModel>)db.GetConcepto().Data;
+            Centrales = (List<CentralModel>)db.GetCentral().Data;
 
+            var suma = 50 / FilesExcelNew.Count();
+            var i = 0;
+            foreach (var item in FilesExcelNew)
+            {
+                GetHeaderExcel(item);
 
-            Dispatcher.BeginInvoke(new Action(() =>
-          {
-              //btnLog.IsEnabled = false;
-              //btnProcesar.IsEnabled = false;
-              //btnSalir.IsEnabled = false;
-              //btnSeleccionar.IsEnabled = false;
-              //  pbStatus.Visibility = Visibility.Visible;
-              Conceptos = (List<ConceptoModel>)db.GetConcepto().Data;
-              Centrales = (List<CentralModel>)db.GetCentral().Data;
+                i++;
+                //lblFilesSuccess.Text = i + " archivos procesados";
+            }
+            //i = i + (50 / FilesExcelOld.Count());
+            foreach (var item in FilesExcelOld)
+            {
+                GetHeaderExcelOld(item);
 
-              var suma = 50 / FilesExcelNew.Count();
-              var i = 0;
-              foreach (var item in FilesExcelNew)
-              {
-                  GetHeaderExcel(item);
-
-                  i++;
-                  //lblFilesSuccess.Text = i + " archivos procesados";
-              }
-              //i = i + (50 / FilesExcelOld.Count());
-              foreach (var item in FilesExcelOld)
-              {
-                  GetHeaderExcelOld(item);
-
-                  i += i;
-                  // lblFilesSuccess.Text = i + " archivos procesados";
-              }
-              // btnLog.IsEnabled = true;
-              //btnProcesar.IsEnabled = true;
-              //btnSalir.IsEnabled = true;
-              //btnSeleccionar.IsEnabled = true;
-              // pbStatus.Visibility = Visibility.Hidden;
-              MessageBox.Show("Se terminó el proceso favor de revisar el log");
-          }));
+                i += i;
+                // lblFilesSuccess.Text = i + " archivos procesados";
+            }
+            MessageBox.Show("Se terminó el proceso favor de revisar el log", "Iberdrola", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
 
@@ -217,7 +214,7 @@ namespace ResumenesIBerdrola
                             Periodo = perido,
                             FechaCreacion = DateTime.Now,
                             Central = central,
-                            Reemplazar = bool.Parse(chkReemplazar.IsChecked.ToString())
+                            Reemplazar = reemplazarData
                         });
                         if (data.Success)
                         {
@@ -269,7 +266,7 @@ namespace ResumenesIBerdrola
                                 Periodo = perido,
                                 FkResumen = resumen.Id,
                                 FkConcepto = fkConcepto,
-                                Reemplazar = bool.Parse(chkReemplazar.IsChecked.ToString())
+                                Reemplazar = reemplazarData
                             });
                         }
 
@@ -364,7 +361,7 @@ namespace ResumenesIBerdrola
                             NombreCliente = nomCliente,
                             Rpu = rpu,
                             FkConcepto = fkConcepto,
-                            Reemplazar = bool.Parse(chkReemplazar.IsChecked.ToString())
+                            Reemplazar = reemplazarData
                         });
                     }
                 }
@@ -432,7 +429,7 @@ namespace ResumenesIBerdrola
                             Periodo = perido,
                             FechaCreacion = DateTime.Now,
                             Central = central,
-                            Reemplazar = bool.Parse(chkReemplazar.IsChecked.ToString())
+                            Reemplazar = reemplazarData
                         });
                         if (data.Success)
                         {
@@ -489,7 +486,7 @@ namespace ResumenesIBerdrola
                                 Periodo = perido,
                                 FkResumen = resumen.Id,
                                 FkConcepto = fkConcepto,
-                                Reemplazar = bool.Parse(chkReemplazar.IsChecked.ToString())
+                                Reemplazar = reemplazarData
                             });
                         }
 
@@ -575,7 +572,7 @@ namespace ResumenesIBerdrola
                             NombreCliente = nomCliente,
                             Rpu = rpu,
                             FkConcepto = fkConcepto,
-                            Reemplazar = bool.Parse(chkReemplazar.IsChecked.ToString())
+                            Reemplazar = reemplazarData
                         });
                     }
                 }
@@ -590,11 +587,8 @@ namespace ResumenesIBerdrola
         private void btnLog_Click(object sender, RoutedEventArgs e)
         {
             // Read the file as one string.
-
             var scr = new ErrorsScr();
             scr.ShowDialog();
-
-
         }
     }
 }
