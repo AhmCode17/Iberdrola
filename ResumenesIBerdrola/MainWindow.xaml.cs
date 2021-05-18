@@ -159,7 +159,7 @@ namespace ResumenesIBerdrola
             Conceptos = (List<ConceptoModel>)db.GetConcepto().Data;
             Centrales = (List<CentralModel>)db.GetCentral().Data;
 
-            var suma = 50 / FilesExcelNew.Count();
+          //  var suma = 50 / FilesExcelNew.Count();
             var i = 0;
             foreach (var item in FilesExcelNew)
             {
