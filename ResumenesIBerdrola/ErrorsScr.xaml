@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ResumenesIBerdrola"
         mc:Ignorable="d" 
-        Title="ErrorsScr" Height="450" Width="800" WindowStartupLocation="CenterScreen" Icon="/Assets/log.png">
+        Title="Log de errores Iberdrola" Height="450" Width="800" WindowStartupLocation="CenterScreen" Icon="/Assets/log.png" ResizeMode="NoResize">
     <Grid>
         <ListBox x:Name="lstErrores" >
             

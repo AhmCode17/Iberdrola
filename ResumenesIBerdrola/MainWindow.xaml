@@ -37,13 +37,19 @@
                 <TextBlock Margin="5" Text="Seleccionar carpeta" VerticalAlignment="Center"></TextBlock>
             </StackPanel>
         </Button>
+        <Button x:Name="btnSeleccionarBd"  HorizontalAlignment="Left" Grid.Column="4" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Top" Width="138" Height="32" Click="btnSeleccionarBd_Click">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="Assets/iconarchive.png" Width="22"></Image>
+                <TextBlock Margin="5" Text=" Seleccionar BD" VerticalAlignment="Center"></TextBlock>
+            </StackPanel>
+        </Button>
 
         <ListBox Grid.Row="2" Grid.ColumnSpan="4" Grid.RowSpan="4" Width="450"  HorizontalAlignment="Left"  Name="lstFiles"/>
         <Label Grid.Row="6" Grid.Column="3" Name="lblFiles" Content="" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
 
         <ProgressBar Grid.Row="7" Grid.ColumnSpan="4" HorizontalAlignment="Left"  IsIndeterminate="true" Visibility="Hidden" Width="450" Height="20" Name="pbStatus" />
         <TextBlock x:Name="lblFilesSuccess" Grid.Row="7" Grid.ColumnSpan="4" Text="" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <Button x:Name="btnProcesar"  HorizontalAlignment="Left" Grid.Column="4" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Top" Width="138" Height="32" Click="BtnProcesar_Click">
+        <Button x:Name="btnProcesar"  HorizontalAlignment="Left" Grid.Column="4" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Top" Width="138" Height="32" Click="BtnProcesar_Click">
             <StackPanel Orientation="Horizontal">
                 <Image Source="Assets/iconProcess.png" Width="22"></Image>
                 <TextBlock  Text="  Procesar" VerticalAlignment="Center"></TextBlock>
@@ -56,7 +62,7 @@
                 <TextBlock Text="  Salir" VerticalAlignment="Center"></TextBlock>
             </StackPanel>
         </Button>
-        <Button x:Name="btnLog" HorizontalAlignment="Left" Grid.Column="4" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Top" Width="138" Height="32" Click="btnLog_Click">
+        <Button x:Name="btnLog" HorizontalAlignment="Left" Grid.Column="4" Grid.Row="4" Grid.ColumnSpan="2" VerticalAlignment="Top" Width="138" Height="32" Click="btnLog_Click">
             <StackPanel Orientation="Horizontal">
                 <Image Source="Assets/iconClose.png" Width="22"></Image>
                 <TextBlock Text=" Ver log de errores" VerticalAlignment="Center"></TextBlock>

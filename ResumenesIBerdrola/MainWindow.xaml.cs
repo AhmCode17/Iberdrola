@@ -1,4 +1,5 @@
 ﻿using log4net;
+using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
@@ -25,13 +26,14 @@ namespace ResumenesIBerdrola
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private ErrorModel errorModel = new ErrorModel();
-        readonly MsAccessDataContext db;
+        MsAccessDataContext db;
         bool reemplazarData = false;
+        private string PathDataBase = string.Empty;
         string[] tipos = { "ENERGIA TOTAL", "ENERGIA NORMAL", "ENERGIA PORTEADA", "ENERGIA NORMAL POR FALTANTE", "RESPALDO POR CARGA" };
         public MainWindow()
         {
             InitializeComponent();
-            db = new MsAccessDataContext(log);
+           
             try
             {
                 var appenders = log4net.LogManager.GetRepository().GetAppenders();
@@ -66,6 +68,7 @@ namespace ResumenesIBerdrola
             {
             }
             log4net.Config.XmlConfigurator.Configure();
+            btnProcesar.IsEnabled = false;
         }
 
         public IDbConnection Connection { get; }
@@ -132,6 +135,7 @@ namespace ResumenesIBerdrola
         private void SetControls(ProgressBar progressBar)
         {
             reemplazarData = bool.Parse(chkReemplazar.IsChecked.ToString());
+            btnSeleccionarBd.IsEnabled = false;
             btnLog.IsEnabled = false;
             btnProcesar.IsEnabled = false;
             chkReemplazar.IsEnabled = false;
@@ -143,6 +147,7 @@ namespace ResumenesIBerdrola
         private void RemoveControls(ProgressBar progressBar)
         {
             progressBar.Visibility = Visibility.Hidden;
+            btnSeleccionarBd.IsEnabled = true;
             btnLog.IsEnabled = true;
             btnProcesar.IsEnabled = true;
             btnSalir.IsEnabled = true;
@@ -589,6 +594,18 @@ namespace ResumenesIBerdrola
             // Read the file as one string.
             var scr = new ErrorsScr();
             scr.ShowDialog();
+        }
+
+        private void btnSeleccionarBd_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Access files (*.accdb)|*.accdb|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {                
+                db = new MsAccessDataContext(log, openFileDialog.FileName);
+                btnProcesar.IsEnabled = true;
+            }
+                
         }
     }
 }

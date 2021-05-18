@@ -9,11 +9,13 @@ namespace ResumenesIBerdrola.Data
     public class MsAccessDataContext
     {
         private static ILog log;
-
-        string connstring = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\Babel\Documents\Iberdrola\ResumenDb.accdb";
-        public MsAccessDataContext(ILog logg)
+        private string cad;
+        string connstring = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=cad";
+        public MsAccessDataContext(ILog logg, string dataBase)
         {
             log = logg;
+            cad = dataBase;
+            connstring = connstring.Replace("cad", cad);
         }
         public Result SaveResumen(ResumenBaseModel model)
         {

@@ -21,18 +21,25 @@ namespace ResumenesIBerdrola
         public ErrorsScr()
         {
             InitializeComponent();
-
-            File.Copy(@"C:\Iberdrola\iberdrolaLog.log", @"C:\Iberdrola\iberdrolaLog2.log", true);
-            string[] text = System.IO.File.ReadAllLines(@"C:\Iberdrola\iberdrolaLog2.log");
-            //System.Console.WriteLine("Contents of WriteLines2.txt = ");
-            foreach (string line in text)
+            try
             {
-                // Use a tab to indent each line of the file.
-                lstErrores.Items.Add("\t" + line);
-                //Console.WriteLine("\t" + line);
+                File.Copy(@"C:\Iberdrola\iberdrolaLog.log", @"C:\Iberdrola\iberdrolaLog2.log", true);
+                string[] text = System.IO.File.ReadAllLines(@"C:\Iberdrola\iberdrolaLog2.log");
+                //System.Console.WriteLine("Contents of WriteLines2.txt = ");
+                foreach (string line in text)
+                {
+                    // Use a tab to indent each line of the file.
+                    lstErrores.Items.Add("\t" + line);
+                    //Console.WriteLine("\t" + line);
+                }
+
+                File.Delete(@"C:\Iberdrola\iberdrolaLog2.log");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se encuentra el archivo de log", "Iberdrola", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            File.Delete(@"C:\Iberdrola\iberdrolaLog2.log");
         }
     }
 }
